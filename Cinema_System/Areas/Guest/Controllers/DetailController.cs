@@ -20,14 +20,22 @@ namespace Cinema_System.Areas.Guest.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        //C1
-        //public async Task<IActionResult> Index(int MoviesId)
-        //{
-        //    return View();
-        //}
+        public async Task<IActionResult> Index(int ? MovieID)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            MovieDetailVM? Movie = new MovieDetailVM()
+            {
+                Movie = await _unitOfWork.Movie.GetAsync(u => u.MovieID == MovieID)
+
+            };
+            ViewData["MovieID"] = MovieID; // Store MovieID using ViewData
+            ViewData["UserId"] = userId;
+            return View(Movie);
+        }
 
         //C1
-        public async Task<IActionResult> Details(int MovieID, string? targetDate = "01/03/2025", string? targetCity = "Danang", string? targetTime = null)
+        public async Task<IActionResult> Details(int MovieID, string? targetDate = null, string? targetCity = null, string? targetTime = null)
         {
             // ✅ Get User ID from Claims
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -50,70 +58,71 @@ namespace Cinema_System.Areas.Guest.Controllers
                 includeProperties: "Seat"
             );
 
-            // ✅ Filter showtimes based on user input
-            var filteredShowtimes = showTimes
-                .Where(show =>
-                    (string.IsNullOrEmpty(targetDate) || show.ShowDates == targetDate) &&
-                    (string.IsNullOrEmpty(targetCity) ||
-                     string.Equals(show?.Cinema?.CinemaCity?.Trim(), targetCity.Trim(), StringComparison.OrdinalIgnoreCase)) &&
-                    (string.IsNullOrEmpty(targetTime) || show?.ShowTimes == targetTime)
-                )
-                .ToList();
-
-
-            // Get available cities from the showtimes
+            // ✅ Get available cities
             var availableCities = showTimes
                 .Select(show => show.Cinema.CinemaCity)
                 .Distinct()
+                .Select(city => new
+                {
+                    City = city,
+                    Selected = (!string.IsNullOrEmpty(targetCity) && city.Equals(targetCity, StringComparison.OrdinalIgnoreCase))
+                })
                 .ToList();
 
-            // If targetDate is null, get all unique show dates
+            // ✅ Get available dates
             var availableDates = showTimes
                 .Select(show => show.ShowDates)
                 .Distinct()
+                .Select(date => new
+                {
+                    Date = date,
+                    Selected = (!string.IsNullOrEmpty(targetDate) && date == targetDate)
+                })
                 .ToList();
 
-
-
-            if (!filteredShowtimes.Any())
+            // ✅ Get all showtimes (No filtering here, let JS filter)
+            var showtimeList = showTimes.Select(show => new
             {
-                return NotFound("No matching showtime found.");
-            }
-
-            // ✅ Create a list of cinema, room, and showtime combinations
-            var showtimeList = filteredShowtimes.Select(show => new
-            {
+                date = show.ShowDates,
                 CinemaName = show.Cinema.Name,
+                CinemaId = show.CinemaID,
+                CinemaAddress = show.Cinema.Address,
+                City = show.Cinema.CinemaCity,
                 RoomId = show.Room.RoomID,
-                RoomName = show.Room.RoomNumber, // or RoomName if available
+                RoomName = show.Room.RoomNumber,
                 Showtime = show.ShowTimes,
+
                 Tickets = showtimeSeats
                     .Where(seat => seat.ShowtimeID == show.ShowTimeID)
                     .Select(seat => new
                     {
                         SeatId = seat.SeatID,
                         SeatNumber = seat.Seat.SeatName,
+
                         SeatType = seat.SeatType.ToString(),
+
                         Price = seat.Price
                     })
                     .ToList()
+
             }).ToList();
 
-            // ✅ Get Food Items
-            var foodItems = await _unitOfWork.Product.GetAllAsync(); // Assuming you have a Food entity
-            var selectedFoodItems = foodItems
-                .Take(1) // Dummy selection logic, modify as needed
-                .Select(food => new
-                {
-                    FoodId = food.ProductID,
-                    FoodName = food.Name,
-                    Quantity = 2, // Default quantity for example
-                    Price = food.Price
-                })
-                .ToList();
 
-            // ✅ Calculate Total Price (Seats + Food)
-            double totalPrice = showtimeList.Sum(st => st.Tickets.Sum(t => t.Price)) + selectedFoodItems.Sum(f => f.Price * f.Quantity);
+            // ✅ Get Food Items (No filtering)
+            var foodItemsList = await _unitOfWork.Product.GetAllAsync();
+            //var selectedFoodItems = foodItems
+            //    .Take(1) // Dummy selection logic
+            //    .Select(food => new
+            //    {
+            //        FoodId = food.ProductID,
+            //        FoodName = food.Name,
+            //        Quantity = 2,
+            //        Price = food.Price
+            //    })
+            //    .ToList();
+
+            // ✅ Calculate Total Price
+            //double totalPrice = showtimeList.Sum(st => st.Tickets.Sum(t => t.Price)) + selectedFoodItems.Sum(f => f.Price * f.Quantity);
 
             // ✅ Return structured response
             var result = new
@@ -121,13 +130,14 @@ namespace Cinema_System.Areas.Guest.Controllers
                 UserId = userId,
                 MovieId = movie.MovieID,
                 MovieName = movie.Title,
-                AvailableDates = availableDates, // List of available dates
-                SelectedDate = targetDate,
-                City = targetCity,
-                AvailableCities = availableCities, // List of available cities
-                Showtimes = showtimeList, // ✅ Multiple cinemas, rooms, showtimes
-                FoodItems = selectedFoodItems,
-                TotalPrice = totalPrice // Updated total price
+                AvailableDates = availableDates, // Now an array of { Date, Selected }
+                SelectedDate = targetDate, // Can be removed if frontend uses `AvailableDates`
+                AvailableCities = availableCities, // Now an array of { City, Selected }
+                City = targetCity, // Can be removed if frontend uses `AvailableCities`
+                Showtimes = showtimeList,
+                FoodItems = foodItemsList,
+                Selected = false,
+                TotalPrice = 0
             };
 
             return Json(new { message = "Success", data = result });
@@ -277,103 +287,7 @@ namespace Cinema_System.Areas.Guest.Controllers
 
 
         //    }
-        //  trong phương thức này sẽ theo quy trình list (ngày)) chọn ngày -> hiển thị list city tương ứng (chọn city))
-        // -> hiển thị list cinema có trong thành phố , trong từng cinema sẽ có list giờ tương ứng 
-        // chọn giờ thì hiển thi ra sơ đồ ghế 
 
-
-        //  vd :   08/03/2025 -- pick     11/03/2025     15/03/2025
-
-        //   city: Danang -- pick ,HCM, ..
-        //  list cinema    :      CGV danang 18:30 <-- pick , 19:30        CGV haichau danang 19:00
-        // chọn vé
-        // hien thi ghe ngoi 
-        // chọn ghế ngồi 
-        //chọn food
-        // submit 
-        // tham khảo trên cinestar detail  film
-
-
-
-
-        // hóa đơn phải chứa tất cả thông tin được định nghĩa trong Orderdetail 
-
-
-
-        //[NotMapped]
-        //public List<TicketSelectionVM> Tickets { get; set; } = new List<TicketSelectionVM>();
-
-        //// List of selected food items (multiple items possible)
-        //[NotMapped]
-        //public List<FoodSelectionVM> FoodItems { get; set; } = new List<FoodSelectionVM>();
-
-
-        // 2 cái trên có nghĩa là người dùng có thể mua đc nhiều vé , nhiều food khác nhau , nên ghi duoiws dạng list 
-
-
-
-        // tham khảo trên cinestar detail  film 
-        // hiện tại seed data test là movieid = 1 , showtimeid = 1 
-
-
-
-
-        // tui đã thử 2 cách 1 cách là làm json  như trên thì phải có 2 phương thức 
-
-        // 1 là INdex chịu trách nhiệm trỏ  tới trang hiển thị 
-        // 2 là details chịu trách nhiệm xử lý logic sau đo pass logic tới detail.js để xử lý giao diện rồi mới chuyển tới Index để hiển thị đầy đủ 
-        // vì vậy vào trang homepage.js ở wwwroot -> js -> hômepage 
-
-        //         <a href = "/Guest/Detail/Details?MovieID=${movie.movieID}" class="btn btn-outline-warning">
-        //                          ${movie.isUpcomingMovie? "Detail" : "Book Ticket"}
-        //</a>                    </a>
-        /// <summary>
-        /// nêú làm theo cách 1 thì /Guest/Detail/Index?MovieID=${movie.movieID}
-        /// vì vậy thì thêm 1 cái public IactionResult (int MovieID) -> nhận giá trị truyền vào 
-        /// đây là lúc cấn tui ko bt làm sao để từ INdex pass qua Detail.js để xử lý logic 
-        /// 
-        /// giống như trong phân trang ở homeController , và homepage.js 
-        /// tui nghĩ phần ni sẽ khó cho Thanh 
-        /// </summary>
-        /// 
-
-
-
-
-
-        // lý do  tại sao json phải dể INdex làm file chiếu thì vì nếu để Details nó chỉ hiển thị JSon form thôi 
-        // ko qua đc Details.html 
-
-
-
-
-
-
-
-        /// <summary>
-        /// cách 2 dùng theo MVC thì xóa INdex đi chỉ dùng Detail thôi
-        /// lúc này thì  <a href = "/Guest/Detail/Details?MovieID=${movie.movieID}" class="btn btn-outline-warning">
-        //                          ${movie.isUpcomingMovie? "Detail" : "Book Ticket"}
-        //</a>                    </a>
-        /// lúc này Details return về view(model) chứ ko phải là JOSon nữa vì model là enomous model 
-        /// nên cần nó chuyển về movieDEtailVM để hiển thị thoong tin và trong Details.cshtml sẽ đinghj nghĩa @model MovieDetalVM -> đây là class để hiển thị chính  
-        /// trong ni thì model MOvie để hiển thị movie details , showdate để hiển thì date và city , từ city sẽ lấy ra đc cinema và time 
-        /// trong lít ticketSelection chứa ghế ngồi hiện tại là showtime 1 , room 1 là 50 cái 
-        /// lit food là thức ăn lựa chọn 
-        /// tôtal là tiền tổng 
-        /// </summary>
-
-
-
-
-        /// <summary>
-        ///  chonj C1 thì dùng json detail, mở lại Index (xử lý vấn đề pass id ) , đổi tên Details.cshtml -> Index.html 
-        /// chọn C2 thì xóa Index dùng Details thôi , INdex.cshmtl -> Details.cshtml , xử lý vấn đề về logic return 
-        /// C3 xóa hết tự mi làm lại --- mi dễ chọn cách ni lắm 
-        /// </summary>
-
-        // mục tiêu là hiển thị hết thông tin usser chọn đc break point ở order post nhận hết thông tin , hiện tại ỏder tui chưa đủ tham số
-        // tham khảo thông tin Order sẽ nhận ở Ỏderdetail model .
 
         [HttpPost]
         public IActionResult  Order(int MovieID, int CinemaID, string ShowDate, string ShowTime)
@@ -427,7 +341,8 @@ namespace Cinema_System.Areas.Guest.Controllers
             ViewBag.TicketId = ticketId;
             return View("TestQR");
         }
-
+        //https://localhost:7115/Guest/Detail/GenerateTicket to test QRcode
+        // enter staff login to use scan camera Staff account in DBInitializer username is account,,Staff@123 password
         public IActionResult TestQR()
         {
             return View();

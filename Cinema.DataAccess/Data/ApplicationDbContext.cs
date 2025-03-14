@@ -378,15 +378,33 @@ namespace Cinema.DataAccess.Data
             );
             // Seed ShowtimeSeats for RoomID = 1 and ShowTimeID = 1
             modelBuilder.Entity<ShowtimeSeat>().HasData(
-                Enumerable.Range(1, 50).Select(seatId => new ShowtimeSeat
-                {
-                    ShowtimeSeatID = seatId,  // Unique ID for each ShowtimeSeat
-                    ShowtimeID = 1,           // Link to ShowTimeID = 1
-                    SeatID = seatId,          // Each seat (1-50)
-                   Price = 10.0,
-                    Status = ShowtimeSeatStatus.Available
-                }).ToArray()
-            );
+     Enumerable.Range(1, 50).Select(seatId => new ShowtimeSeat
+     {
+         ShowtimeSeatID = seatId,  // Unique ID for each ShowtimeSeat
+         ShowtimeID = 1,           // Link to ShowTimeID = 1
+         SeatID = seatId,          // Each seat (1-50)
+         Price = (IsVipSeat(seatId) ? 20.0 : 10.0), // VIP seats cost more
+         Status = ShowtimeSeatStatus.Available,
+         SeatType = IsVipSeat(seatId) ? TicketType.Vip : TicketType.Standard,
+     }).ToArray()
+ );
+
+            // Helper method to check if a seat falls within the VIP area
+            bool IsVipSeat(int seatId)
+            {
+                var vipSeats = new HashSet<int>
+    {
+        // B3 to B8
+        13, 14, 15, 16, 17, 18,
+        // C3 to C8
+        23, 24, 25, 26, 27, 28,
+        // D3 to D8
+        33, 34, 35, 36, 37, 38
+    };
+
+                return vipSeats.Contains(seatId);
+            }
+
 
 
         }

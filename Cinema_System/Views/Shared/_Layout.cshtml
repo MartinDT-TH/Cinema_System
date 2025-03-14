@@ -5,44 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Cinema_System</title>
     <script type="importmap"></script>
-
-    <!-- Custom CSS -->
-
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Cinema_System.styles.css" asp-append-version="true" />
-
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- Toastr CSS -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
-<
     <link rel="stylesheet" href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" />
-    <!-- Quill Editor CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" />
-    @if (User.IsInRole("Admin"))
-    {
-        <!-- Google Fonts: Roboto -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
-    }
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 </head>
 <body>
-    @if (User.IsInRole("Admin"))
-    {
-        <header class="bg-blue-600 text-white p-4 d-flex justify-content-between align-items-center">
-            <h1 class="h2 font-weight-bold">Cinema Admin Dashboard</h1>
-            <div>
-                <button class="btn btn-primary">Logout</button>
-            </div>
-        </header>
-    }
-    else
-    {
-        <header>
-         <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-1" data-bs-theme="dark" style="height: 80px;">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-1" data-bs-theme="dark" style="height: 80px;">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/css/images/logo2.png" style="width:65px; height:45px;" />
@@ -54,23 +28,35 @@
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-center">
                     <ul class="navbar-nav mx-auto">
-                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Order" asp-action="Index">Products</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Order" asp-action="Index">Discount</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Order" asp-action="Index">About Us</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Order" asp-action="Index">Policy</a></li>
+                            <a class="nav-link small-text" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
                         <li class="nav-item">
+                            <a class="nav-link small-text" asp-area="" asp-controller="Order" asp-action="Index">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link small-text" asp-area="" asp-controller="Order" asp-action="Index">Discount</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link small-text" asp-area="" asp-controller="Order" asp-action="Index">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link small-text" asp-area="" asp-controller="Order" asp-action="Index">Policy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link small-text" asp-area="Guest" asp-controller="Cart" asp-action="Index"></a>
+
                             <a class="nav-link" asp-area="" asp-controller="Order" asp-action="Index">
+
                                 <i class="fa-solid fa-cart-shopping"></i>
                             </a>
                         </li>
-                      
-                        @if(User.IsInRole("Staff"))
+
+                        @if (User.IsInRole("Staff"))
                         {
                             <li class="nav-item"><a class="nav-link" asp-area="Staff" asp-controller="Staff" asp-action="CameraScan">Scan Camera</a></li>
                         }
-                       
-                        
+
+
                     </ul>
                 </div>
 
@@ -81,32 +67,25 @@
         </nav>
     </header>
 
-    }
-
-    @if (User.IsInRole("Admin"))
-    {
-        <div class="admin-sidebar">
-            @Html.Partial("_AdminSidebarPartial")
-        </div>
-        <!-- Main Section -->
-        <main class="flex-grow-1 p-4">
-            @RenderBody()
-        </main>
-    }
-    else
-    {
+    <div class="container">
         <main role="main" class="pb-3">
             <partial name="_Notification" />
             @RenderBody()
         </main>
-    }
+    </div>
 
+    <!-- Floating Chat Icon -->
+    <div id="chat-icon" class="chat-icon">
+        <i class="fa-solid fa-comments"></i>
+    </div>
 
-    @* <footer class="border-top footer text-muted">  *@
-    @*      <div class="container">   *@
-    @*          &copy; 2025 - Cinema_System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>  *@
-    @*      </div>   *@
-    @*  </footer>  *@
+    <!-- Chat Window (Hidden by Default) -->
+    @* <partial name="_ChatPartial" /> *@
+
+    <script src="~/lib/aspnet/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/chat.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -118,24 +97,6 @@
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
-    @if (User.IsInRole("Admin"))
-    {
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    } else {
-      <!-- Floating Chat Icon -->
-    <div id="chat-icon" class="chat-icon">
-        <i class="fa-solid fa-comments"></i>
-    </div>
-
-          <!-- Chat Window (Hidden by Default) -->
-    @* <partial name="_ChatPartial" /> *@
-
-    <script src="~/lib/aspnet/signalr/dist/browser/signalr.js"></script>
-	<script src="~/js/chat.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
-
     <script>
         // Basic toggle for chat icon
         document.getElementById('chat-icon').addEventListener('click', function() {
@@ -143,6 +104,7 @@
             chatContainer.style.display = chatContainer.style.display === 'none' ? 'flex' : 'none';
         });
     </script>
+
     <style>
         /* Floating Chat Icon */
         .chat-icon {
@@ -160,24 +122,14 @@
             font-size: 24px;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-         
         }
 
             .chat-icon:hover {
                 background-color: #0056b3;
             }
     </style>
-    }
-    
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
-
-
-
-
-
-
-
 

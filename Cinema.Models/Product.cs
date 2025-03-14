@@ -31,6 +31,7 @@ namespace Cinema.Models
         [Range(0, int.MaxValue, ErrorMessage = "Quantity cannot be negative.")]
         public int Quantity { get; set; } = 0;
 
+        public int CountProduct { get; set; } = 0;
 
         [ValidateNever]
         public string? ProductImage { get; set; }

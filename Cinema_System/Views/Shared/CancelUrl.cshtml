@@ -1,0 +1,69 @@
+﻿@model string
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Cancelled</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+            color: #343a40;
+            padding: 50px;
+        }
+
+        .cancel-container {
+            max-width: 500px;
+            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .cancel-icon {
+            font-size: 50px;
+            color: #dc3545;
+        }
+
+        .cancel-message {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .details {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .btn-home {
+            display: inline-block;
+            text-decoration: none;
+            color: #ffffff;
+            background-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+            .btn-home:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+<body>
+    <div class="cancel-container">
+        <div class="cancel-icon">❌</div>
+        <div class="cancel-message">Order Cancelled</div>
+        <div class="details">
+            Your order has been cancelled successfully. If this was a mistake, please place a new order.
+        </div>
+        <a href="@Url.Action("Index", "Home", new { area = "Guest" })" class="btn-home">Go to Home</a>
+    </div>
+</body>
+</html>

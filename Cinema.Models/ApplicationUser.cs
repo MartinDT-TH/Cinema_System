@@ -9,10 +9,10 @@ namespace Cinema.Models
     {
         [Required]
         public string FullName { get; set; }
-        [NotMapped] 
+        [NotMapped]
         public string Role { get; set; }
 
-        public string ? UserImage { get; set; }
+        public string? UserImage { get; set; }
         public int Points { get; set; } = 0;
     }
 }

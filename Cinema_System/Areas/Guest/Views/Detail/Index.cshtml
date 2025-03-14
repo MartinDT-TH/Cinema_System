@@ -1,0 +1,140 @@
+﻿@model MovieDetailVM
+
+
+@{
+	ViewData["Title"] = "Movie Details";
+}
+
+
+
+
+<input asp-for="Movie.MovieID" hidden />
+<div class="container">
+	<!-- Section 1: Movie Information -->
+	<section id="movie-info" class="row mb-5">
+
+		<div class="col-md-4">
+			<img src="@Model.Movie.MovieImage" alt="Movie Poster" class="img-fluid" />
+		</div>
+		<div class="col-md-8">
+			<h1>@Model.Movie.Title</h1>
+			<!--<p><strong>Director:</strong> Director Name</p> -->
+			<!--<p><strong>Cast:</strong> Actor 1, Actor 2, Actor 3</p> -->
+			<p><strong>Genre:</strong>  @Model.Movie.Genre</p>
+			<p><strong>Duration:</strong>  @Model.Movie.Duration</p>
+			<p><strong>Release Date:</strong>  @Model.Movie.ReleaseDate</p>
+			<p>
+				<strong>Synopsis:</strong> @Model.Movie.Synopsis
+			</p>
+			<p>
+				<a href="@Model.Movie.TrailerLink"><i class="fa-solid fa-circle-play" style="color: white;"></i></a> Watch Trailer
+			</p>
+
+		</div>
+	</section>
+
+
+
+
+<input type="hidden" id="movieID" value="@ViewData["MovieID"]" />
+
+
+	<div class="container mt-3 mb-4">
+		<div class="row mb-3">
+			<div class="text-center fw-bold"><h3>Lịch Chiếu</h3></div>
+			
+			<div id="filterDates" class="col-12 d-flex justify-content-evenly flex-wrap mb-2"></div>
+
+			<div class="d-flex justify-content-between align-items-center mb-2">
+				<div class="fw-bold"><h3>Danh sách Rạp</h3></div>
+				<div id="filterCities" class="small"></div>
+			</div>
+
+			<div id="movieDetails" class="col-8 mb-2 mx-auto"></div>
+			<h3 class="category-title text-center fw-bold">Chọn loại vé</h3>
+			<div id="ticketContainer" class="row justify-content-center">
+				<!-- Ticket types will be inserted dynamically here -->
+			</div>
+
+			</div>
+
+		</div>
+	<div id="seatsContainer" class="mb-4 mx-auto col-8"></div>
+
+
+
+
+
+
+
+
+
+
+    <!-- Section 4: Food Selection -->
+    <section id="food-selection" class="mb-5">
+        <h2 class="text-center">Food</h2>
+        <h3 class="category-title text-center">Combo Food</h3>
+        <div class="row justify-content-center" id="foodContainer">
+          
+          
+        </div>
+    </section>
+
+    <!-- Section 5: Booking Summary -->
+    <form id="booking-summary" asp-action="" class="mb-5 d-none" method="post">
+        <div class="row align-items-center">
+            <!-- Movie Details -->
+            <div class="col-md-3">
+                <p><strong>Movie:</strong> <span id="displayMovieName">@Model.Movie.Title</span></p>
+            </div>
+
+            <!-- Combined Food and Tickets Display -->
+            <div class="col-md-3">
+                <p><strong>Items:</strong> <span id="displayFood">None</span></p>
+            </div>
+
+            <!-- Countdown Timer -->
+            <div class="col-md-3">
+                <p><strong>Time expired:</strong> <span id="countdown">05:00</span></p>
+            </div>
+
+            <!-- Total Price -->
+            <div class="col-md-2">
+                <p><strong>Total:</strong> <span id="displayTotalPrice">0 VND</span></p>
+            </div>
+
+            <!-- Confirm Booking Button -->
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-success">Confirm Booking</button>
+            </div>
+        </div>
+
+        <!-- Hidden Fields for Form Submission -->
+        <input type="hidden" name="User Id" id="User Id" value="@ViewData["User Id"]" />
+        <input type="hidden" name="MovieId" id="movieID" value="@ViewData["MovieID"]" />
+        <input type="hidden" name="MovieName" id="MovieName" />
+        <input type="hidden" name="Date" id="selectedDate" />
+        <input type="hidden" name="City" id="selectedCity" />
+        <input type="hidden" name="Cinema" id="selectedCinema" />
+        <input type="hidden" name="RoomId" id="RoomId" />
+        <input type="hidden" name="RoomName" id="RoomName" />
+        <input type="hidden" name="Showtime" id="selectedShowtime" />
+        <input type="hidden" name="TotalPrice" id="TotalPrice" />
+        <input type="hidden" name="TicketsJson" id="TicketsJson" />
+        <input type="hidden" name="SelectedSeatsJson" id="SelectedSeatsJson" />
+        <input type="hidden" name="FoodItemsJson" id="FoodItemsJson" />
+    </form>
+
+
+
+	
+
+
+@section Scripts {
+	<script src="~/js/detail.js"></script>
+	<link rel="stylesheet" href="~/css/detail.css" />
+}
+
+
+
+

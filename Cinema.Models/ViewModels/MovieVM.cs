@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
+//using Microsoft.AspNetCore.Mvc.Rendering;
 namespace Cinema.Models.ViewModels
 {
     public class MovieVM
     {
         // dung de hien thi trang chinh nhu ben cinestar
-
 
         public IEnumerable<Movie> ShowingMovies { get; set; } // film dang chieu,    // film sap chieu
                                                               // phan biet qua isUpcommingMOvie

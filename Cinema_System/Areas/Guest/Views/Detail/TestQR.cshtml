@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h2>Generate Ticket QR Code</h2>
+
+@using (Html.BeginForm("GenerateTicket", "Detail", FormMethod.Post))
+{
+            <label for="ticketId">Enter Ticket ID:</label>
+            <input type="text" name="ticketId" placeholder="e.g., TICKET12345" required />
+            <input type="submit" value="Generate QR Code" />
+}
+
+<hr />
+
+@if (ViewBag.QRCode != null)
+{
+            <h3>Your QR Code:</h3>
+            <img src="@ViewBag.QRCode" style="width:200px; height:200px;" />
+            <p>Ticket ID: @ViewBag.TicketId</p>
+}

@@ -1,6 +1,7 @@
 ﻿using Cinema.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 public class ShowtimeSeat
 {
@@ -12,6 +13,8 @@ public class ShowtimeSeat
 
     [Required]
     public int SeatID { get; set; } // Foreign key
+
+   
 
     [Required]
     [Range(0.00, 9999.99, ErrorMessage = "Price must be a positive value.")]
@@ -27,9 +30,11 @@ public class ShowtimeSeat
 
     // Navigation properties
     [ForeignKey("ShowtimeID")]
+    [ValidateNever]
     public virtual ShowTime Showtime { get; set; }
 
     [ForeignKey("SeatID")]
+    [ValidateNever]
     public virtual Seat Seat { get; set; }
 }
 
@@ -38,9 +43,9 @@ public class ShowtimeSeat
 // Enum for different ticket types
 public enum TicketType
 {
-    Standard,
-    VIP,
-    Double
+   Vip,
+   Standard,
+   Double
 }
 
 // Enum for seat booking status

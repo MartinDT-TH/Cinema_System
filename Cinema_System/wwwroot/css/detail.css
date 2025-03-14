@@ -1,0 +1,411 @@
+﻿body {
+    font-family: Arial, sans-serif;
+/*     background-color: #f8f9fa; */
+background-color: black;
+}
+
+#movie-info h1,p{
+    color: white;
+}
+
+#movie-info h1, strong {
+    text-transform: uppercase;
+    font-family: Anton;
+}
+
+#booking-options h2 {
+    text-transform: uppercase;
+    font-family: Impact, fantasy;
+}
+
+#booking-options label{
+    color: white;
+}
+
+#food-selection h2 {
+    font-family: Impact, fantasy;
+    text-transform: uppercase;
+}
+
+#seat-selection h2{
+    font-family: Impact, fantasy;
+    text-transform: uppercase;
+}
+
+.container {
+    padding: 20px;
+}
+
+.text-center{
+    margin-bottom: 12px;
+}
+
+.screen {
+    background-color: white; 
+    color: white; 
+    padding: 10px 20px; 
+    margin-bottom: 20px; 
+    border-radius: 10px; 
+    font-weight: bold; 
+    font-size: 18px; 
+    text-transform: uppercase; 
+    width: 60%; 
+    margin-left: auto; 
+    margin-right: auto; 
+    box-shadow: 0 10px 20px rgba(173, 216, 230, 0.6), /* Hiệu ứng phát sáng ở cạnh dưới */
+    -10px 0 20px rgba(173, 216, 230, 0.4), /* Hiệu ứng phát sáng ở cạnh trái */
+    10px 0 20px rgba(173, 216, 230, 0.4); /* Hiệu ứng phát sáng ở cạnh phải */
+}
+
+.seat:hover {
+    transform: scale(1.02);
+    transition: transform 0.3s ease;
+}
+
+.seat {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+    background-color: white;
+    color: black;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.seat.selected {
+    background-color: #ccccff; /* Ghế đã chọn màu tím */
+}
+.seat.booked {
+    background-color: #dc3545;
+    cursor: not-allowed;
+}
+
+.seat.maintenance {
+    background-color: grey;
+    cursor: not-allowed;
+}
+
+/* Chú thích các loại ghế */
+.seat-legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.legend-item .seat {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: default;
+}
+
+.legend-item .available {
+    background-color: white; /* Ghế chưa chọn */
+    border: 1px solid black;
+}
+
+.legend-item .selected {
+    background-color: #ccccff; /* Ghế chọn */
+}
+
+.legend-item .maintenance {
+    background-color: grey; /* Ghế bảo trì */
+}
+
+.legend-item .reserved {
+    background-color: #dc3545; /* Ghế bảo trì */
+}
+
+.legend-item span {
+    font-size: 14px;
+    color: white;
+}
+
+#countdown {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/*#booking-summary {
+    background-color: #e1d4fa;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#booking-summary p{
+    color: black;
+}
+
+#booking-summary h2 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+#booking-summary .row {
+    margin: 0;
+}
+
+#booking-summary .col-md-3, #booking-summary .col-md-2, #booking-summary .col-md-1 {
+    padding: 10px;
+    border-right: 1px solid #ddd;
+}
+
+#booking-summary .col-md-1 {
+    border-right: none;
+}
+
+#booking-summary .btn-success {
+    width: 100%;
+}*/
+/*
+#booking-summary {
+    background-color: #e1d4fa;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    bottom: 20px;
+    z-index: 1000;
+    margin-top: 20px;
+}
+
+#booking-summary p {
+    color: black;
+    margin: 0;
+}
+
+#booking-summary h2 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+#booking-summary .row {
+    margin: 0;
+}
+
+#booking-summary .col-md-3,
+#booking-summary .col-md-2,
+#booking-summary .col-md-1 {
+    padding: 10px;
+    border-right: 1px solid #ddd;
+}
+
+#booking-summary .col-md-1 {
+    border-right: none;
+}
+
+#booking-summary .btn-success {
+    width: 100%;
+    background-color: black;
+}*/
+
+#booking-summary {
+    background-color: #e1d4fa;
+    padding: 15px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    bottom: -30px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    width: 100%;
+    margin: 0;
+}
+
+#booking-summary p {
+    color: black;
+    margin: 0;
+}
+
+#booking-summary .row {
+    margin: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#booking-summary .col-md-3,
+#booking-summary .col-md-2,
+#booking-summary .col-md-1 {
+    padding: 10px;
+    border-right: 1px solid #ddd;
+}
+
+#booking-summary .col-md-1 {
+    border-right: none;
+}
+
+#booking-summary .btn-success {
+    width: 100%;
+    background-color: white;
+    color: black;
+}
+
+#booking-summary .btn-success:hover{
+    background-color: black;
+    color: white;
+}
+
+#food-selection {
+/*     background-color: #1f1f1f; */
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.category-title {
+    color: #e1d4fa;
+    font-weight: bold;
+    font-size: 22px;
+    margin-top: 30px;
+    text-transform: uppercase;
+}
+
+.product-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    color: white;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+}
+
+.product-img {
+    width: 120px;
+    height: auto;
+    margin-right: 15px;
+    border-radius: 8px;
+}
+
+.product-info {
+    flex: 1;
+    text-align: left;
+    color: white;
+}
+
+.product-info h4 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: black;
+}
+
+.product-info p {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 10px;
+    color: black;
+}
+
+.price {
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    display: block;
+}
+
+.quantity {
+    margin-top: 10px;
+}
+
+.quantity button {
+    font-size: 18px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: #e1d4fa;
+    color: black;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.quantity span {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 10px;
+    color: black;
+}
+/* Sci-Fi Card Styles */
+.sci-fi-card {
+    background: radial-gradient(circle, #0a0a0a, #1a1a1a);
+    color: #00d4ff;
+    border: 2px solid #00d4ff;
+    box-shadow: 0px 0px 15px #00d4ff;
+    transition: 0.3s ease-in-out;
+    border-radius: 10px;
+    min-height: 150px;
+    padding: 20px;
+}
+
+    /* Updated: Make card title white */
+    .sci-fi-card h5 {
+        font-weight: bold;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+/* Sci-Fi Showtime Button */
+.sci-fi-btn {
+    background: transparent;
+    color: #00d4ff;
+    box-shadow: 0px 0px 10px #00d4ff;
+    transition: 0.3s ease-in-out;
+    border-radius: 8px;
+    padding: 8px 16px;
+    border: none; /* Removed border */
+}
+
+    /* Hover Effect */
+    .sci-fi-btn:hover {
+        background: linear-gradient(45deg, #00d4ff, #007bff);
+        color: white;
+        box-shadow: 0px 0px 20px #00d4ff;
+    }
+
+/* Futuristic Glow Animation */
+@keyframes glow {
+    0% {
+        box-shadow: 0px 0px 5px #00d4ff;
+    }
+
+    50% {
+        box-shadow: 0px 0px 15px #00d4ff;
+    }
+
+    100% {
+        box-shadow: 0px 0px 5px #00d4ff;
+    }
+}
+
+.sci-fi-card, .sci-fi-btn {
+    animation: glow 2s infinite alternate;
+}
+

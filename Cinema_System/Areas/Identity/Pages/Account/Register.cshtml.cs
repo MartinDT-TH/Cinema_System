@@ -194,7 +194,7 @@ namespace Cinema_System.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _userManager.AddToRoleAsync(user, SD.Role_Customer);
+                        await _userManager.AddToRoleAsync(user, SD.Role_Guest);
                     }
 
                     //--------------------------------------------------------
